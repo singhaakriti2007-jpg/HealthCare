@@ -1,8 +1,9 @@
 @echo off
 title Push MEDNEXUS to GitHub
-color 0A
+color 0B
 echo ============================================================
-echo   MEDNEXUS - Quick GitHub Deployment Helper
+echo   MEDNEXUS - GitHub Publisher
+echo   Repository: https://github.com/singhaakriti2007-jpg/mednexus
 echo ============================================================
 echo.
 
@@ -10,41 +11,29 @@ set "GIT_CMD=C:\Users\Arush\.cache\codex-runtimes\codex-primary-runtime\dependen
 
 cd /d "%~dp0"
 
-echo Current Git status:
-"%GIT_CMD%" status --short
-echo.
-
-echo Enter your GitHub repository URL:
-echo (Example: https://github.com/your-username/mednexus.git)
-echo.
-set /p REPO_URL="Repository URL: "
-
-if "%REPO_URL%"=="" (
-    echo [ERROR] No URL entered. Aborting.
-    pause
-    exit /b 1
-)
-
-echo.
-echo [1/3] Setting remote origin...
+echo [1/2] Connecting to remote origin...
 "%GIT_CMD%" remote remove origin 2>nul
-"%GIT_CMD%" remote add origin %REPO_URL%
-
-echo [2/3] Renaming branch to main...
+"%GIT_CMD%" remote add origin https://github.com/singhaakriti2007-jpg/mednexus.git
 "%GIT_CMD%" branch -M main
 
-echo [3/3] Pushing commits to GitHub...
+echo [2/2] Pushing code to GitHub...
+echo (If a GitHub sign-in window opens, click "Sign in with your browser")
+echo.
+
 "%GIT_CMD%" push -u origin main
 
 if %ERRORLEVEL% EQU 0 (
     echo.
     echo ============================================================
-    echo   SUCCESS! MEDNEXUS is now published on GitHub.
+    echo   SUCCESS! MEDNEXUS is now live on GitHub:
+    echo   https://github.com/singhaakriti2007-jpg/mednexus
     echo ============================================================
 ) else (
     echo.
-    echo [ERROR] Push failed. Make sure you created the repo on GitHub
-    echo and have permissions to push.
+    echo [NOTE] If it asks for authentication, generate a Personal Access Token:
+    echo 1. Go to: https://github.com/settings/tokens
+    echo 2. Generate a classic token with 'repo' scope
+    echo 3. Enter your token when prompted
 )
 
 pause
