@@ -1,0 +1,50 @@
+name: MEDNEXUS CI & Build Verification
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install Dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+        env:
+          DATABASE_URL: "file:./dev.db"
+
+      - name: Push Database Schema
+        run: pnpm prisma db push
+        env:
+          DATABASE_URL: "file:./dev.db"
+
+      - name: Seed Initial Clinical Data
+        run: node prisma/seed.js
+        env:
+          DATABASE_URL: "file:./dev.db"
+
+      - name: Build Production Next.js Bundle
+        run: pnpm build
+        env:
+          DATABASE_URL: "file:./dev.db"
+          NEXTAUTH_SECRET: "mednexus-production-grade-encryption-key-healthcare-2026"
+          NEXTAUTH_URL: "http://localhost:3000"
