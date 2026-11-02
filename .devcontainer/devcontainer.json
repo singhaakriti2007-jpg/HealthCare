@@ -1,0 +1,17 @@
+{
+  "name": "MEDNEXUS Healthcare Full-Stack Environment",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {
+    "ghcr.io/devcontainers-contrib/features/pnpm:2": {}
+  },
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "MEDNEXUS Web Application",
+      "onAutoForward": "openBrowser",
+      "visibility": "public"
+    }
+  },
+  "postCreateCommand": "pnpm install && pnpm prisma generate && pnpm prisma db push && node prisma/seed.js",
+  "postStartCommand": "pnpm start"
+}
